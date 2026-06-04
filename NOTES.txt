@@ -1,0 +1,24 @@
+Test strategy and rationale
+
+1) Scope and channel choice
+- Main suite targets public Kraken WebSocket v2 channels: book, ticker, trade, ohlc.
+- Orders/Level3 is included as a negative authentication test only (no token).
+
+2) Core behaviors validated
+- Subscription acknowledgement and request/response correlation.
+- Message structure and required fields by channel.
+- Book sanity checks: best bid < best ask, bids descending, asks ascending.
+- Ticker sanity checks: symbol match, bid/ask relationship, positive last price.
+- Trade sanity checks: positive price/qty and non-decreasing timestamps.
+- OHLC sanity checks: interval metadata and high/low consistency vs open/close.
+- Orders auth check: unauthenticated level3 subscribe returns expected rejection.
+
+3) Assumptions
+- Live market-data feeds are non-deterministic and can vary by timing.
+- Temporary network/server variance may happen, so tests use bounded waits.
+- Liquid symbols are preferred to reduce data availability flakiness.
+
+4) Design trade-offs
+- Kept implementation intentionally small and readable.
+- Used a lightweight reusable websocket client abstraction.
+- Avoided heavy frameworks and extra dependencies beyond assignment scope.
